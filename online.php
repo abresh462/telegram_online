@@ -1,14 +1,9 @@
-<?php
+$settings = [
+    'app_info' => [
+        'api_id' => getenv('API_ID'),
+        'api_hash' => getenv('API_HASH')
+    ]
+];
 
-if (!file_exists('madeline.php')) {
-    copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
-}
-include 'madeline.php';
-
-$MadelineProto = new \danog\MadelineProto\API('session.madeline');
+$MadelineProto = new \danog\MadelineProto\API('session.madeline', $settings);
 $MadelineProto->start();
-
-while(1) {
-    $MadelineProto->account->updateStatus(offline: false, );
-    sleep(5);
-}
