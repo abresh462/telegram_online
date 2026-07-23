@@ -6,14 +6,20 @@ if (!file_exists('madeline.php')) {
 include 'madeline.php';
 
 use danog\MadelineProto\Settings;
+use danog\MadelineProto\Settings\AppInfo;
 
 $api_id = getenv('API_ID');
 $api_hash = getenv('API_HASH');
 $phone_number = getenv('PHONE_NUMBER');
 
-// Create settings object (new syntax)
+// Create AppInfo object
+$appInfo = new AppInfo();
+$appInfo->apiId = (int)$api_id;
+$appInfo->apiHash = $api_hash;
+
+// Create settings object with AppInfo
 $settings = (new Settings)
-    ->setAppInfo($api_id, $api_hash);
+    ->setAppInfo($appInfo);
 
 // Check if verification code is provided
 $verification_code = getenv('VERIFICATION_CODE');
