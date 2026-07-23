@@ -5,12 +5,13 @@ if (!file_exists('madeline.php')) {
 }
 include 'madeline.php';
 
-// Read credentials from environment variables
 $api_id = getenv('API_ID');
 $api_hash = getenv('API_HASH');
 $phone_number = getenv('PHONE_NUMBER');
 
-// Create settings with your credentials
+// Check if verification code is provided
+$verification_code = getenv('VERIFICATION_CODE');
+
 $settings = [
     'app_info' => [
         'api_id' => (int)$api_id,
@@ -19,8 +20,23 @@ $settings = [
 ];
 
 $MadelineProto = new \danog\MadelineProto\API('session.madeline', $settings);
-$MadelineProto->start();
 
+if ($verification_code) {
+    // First time setup with verification code
+    echo "Starting phone login...\n";
+    $MadelineProto->phone_login($phone_number);
+    echo "Verification code sent!\n";
+    
+    echo "Completing login with code: $verification_code\n";
+    $MadelineProto->complete_phone_login($verification_code);
+    echo "Login successful! Session saved.\n";
+} else {
+    // Normal start with existing session
+    echo "Starting with existing session...\n";
+    $MadelineProto->start();
+}
+
+echo "Starting online status loop...\n";
 while(1) {
     $MadelineProto->account->updateStatus(offline: false);
     sleep(5);
