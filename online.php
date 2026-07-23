@@ -12,22 +12,19 @@ $api_id = getenv('API_ID');
 $api_hash = getenv('API_HASH');
 $phone_number = getenv('PHONE_NUMBER');
 
-// Create AppInfo object
+// Create AppInfo object and set values using methods
 $appInfo = new AppInfo();
-$appInfo->apiId = (int)$api_id;
-$appInfo->apiHash = $api_hash;
+$appInfo->setApiId((int)$api_id);
+$appInfo->setApiHash($api_hash);
 
 // Create settings object with AppInfo
-$settings = (new Settings)
-    ->setAppInfo($appInfo);
+$settings = (new Settings)->setAppInfo($appInfo);
 
-// Check if verification code is provided
 $verification_code = getenv('VERIFICATION_CODE');
 
 $MadelineProto = new \danog\MadelineProto\API('session.madeline', $settings);
 
 if ($verification_code) {
-    // First time setup with verification code
     echo "Starting phone login...\n";
     $MadelineProto->phone_login($phone_number);
     echo "Verification code sent!\n";
@@ -36,7 +33,6 @@ if ($verification_code) {
     $MadelineProto->complete_phone_login($verification_code);
     echo "Login successful! Session saved.\n";
 } else {
-    // Normal start with existing session
     echo "Starting with existing session...\n";
     $MadelineProto->start();
 }
